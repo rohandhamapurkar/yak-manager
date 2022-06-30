@@ -11,10 +11,14 @@ import (
 
 func main() {
 	var config structs.Config
-	jsonFilePath := flag.String("file", "", "json file path")
+	jsonFilePath := flag.String("file", "", "full json file path")
 	elapsedDays := flag.Int("days", 0, "number of elapsed days, default value 0")
 
 	flag.Parse()
+
+	if *elapsedDays <= 0 {
+		log.Fatalln("Invalid elapsedDays value")
+	}
 
 	config.ElapsedDays = *elapsedDays
 

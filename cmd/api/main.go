@@ -16,7 +16,7 @@ import (
 func main() {
 
 	var config structs.Config
-	jsonFilePath := flag.String("file", "", "json file path")
+	jsonFilePath := flag.String("file", "", "full json file path")
 
 	flag.Parse()
 
@@ -29,15 +29,17 @@ func main() {
 		log.Fatalln("Error unmarshaling json file")
 	}
 
+	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 
 	router.GET("/yak-shop/stock/:T", func(c *gin.Context) {
 		elapsedDays, err := strconv.Atoi(c.Param("T"))
-		if err != nil {
+		if err != nil || elapsedDays <= 0 {
 			fmt.Println(err)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": "Invalid elapsed days value",
 			})
+			return
 		}
 		var herd structs.Herd
 
@@ -55,11 +57,12 @@ func main() {
 
 	router.GET("/yak-shop/herd/:T", func(c *gin.Context) {
 		elapsedDays, err := strconv.Atoi(c.Param("T"))
-		if err != nil {
+		if err != nil || elapsedDays <= 0 {
 			fmt.Println(err)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": "Invalid elapsed days value",
 			})
+			return
 		}
 		var herd structs.Herd
 
@@ -74,13 +77,12 @@ func main() {
 		})
 	})
 
+	fmt.Println("Running on :8000")
 	err = router.Run(":8000")
 
 	if err != nil {
 		fmt.Println(err)
 		log.Fatalln("Error running server")
 	}
-
-	fmt.Println("Running server on port :8000")
 
 }
