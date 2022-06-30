@@ -7,7 +7,7 @@ import (
 )
 
 func doublePointPrecision(num float32) float32 {
-	return float32(math.Round(float64((num+0.01)*100)) / 100)
+	return float32(math.Round(float64((num)*100)) / 100)
 }
 func singlePointPrecision(num float32) float32 {
 	return float32(math.Round(float64((num)*10)) / 10)
@@ -40,6 +40,10 @@ func ComputeStockAndHerd(herd structs.Herd, elapsedDays int) (float32, int) {
 		// iterate over all yaks in my herd
 		for j := 0; j < len(herd.Herd); j++ {
 
+			if herd.Herd[j].Age >= 10 {
+				continue
+			}
+
 			// if day 0 then shave
 			if i == 0 {
 				herd.Herd[j].AgeLastShaved = singlePointPrecision(herd.Herd[j].Age)
@@ -58,7 +62,7 @@ func ComputeStockAndHerd(herd structs.Herd, elapsedDays int) (float32, int) {
 			}
 
 			// increment yak age
-			herd.Herd[j].Age = doublePointPrecision(herd.Herd[j].Age)
+			herd.Herd[j].Age = doublePointPrecision(herd.Herd[j].Age) + 0.01
 
 		}
 
