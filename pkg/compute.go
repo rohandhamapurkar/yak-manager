@@ -48,7 +48,10 @@ func ComputeStockAndHerd(herd structs.Herd, elapsedDays int) (float32, int) {
 			if i == 0 {
 				herd.Herd[j].AgeLastShaved = singlePointPrecision(herd.Herd[j].Age)
 				wool++
-			} else {
+			} else if herd.Herd[j].Age == 1 {
+				herd.Herd[j].AgeLastShaved = singlePointPrecision(herd.Herd[j].Age)
+				wool++
+			} else if herd.Herd[j].Age > 1 {
 				eligible := math.Ceil(float64(8 + (herd.Herd[j].Age * 100 * 0.01)))
 				if i%int(eligible) == 0 {
 					herd.Herd[j].AgeLastShaved = singlePointPrecision(herd.Herd[j].Age)
